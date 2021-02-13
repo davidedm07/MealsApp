@@ -14,13 +14,16 @@ class CategoryMealsScreen extends StatefulWidget {
 }
 
 class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
-  @override
-  _CategoryMealsScreenState createState() => _CategoryMealsScreenState();
-}
-
-class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
   Map<String, String> routeArguments;
   bool isInit = true;
+
+  List<Meal> _categoryMeals;
+
+  @override
+  void initState() {
+    super.initState();
+    _categoryMeals = widget.meals;
+  }
 
   @override
   void didChangeDependencies() {
@@ -28,17 +31,14 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     routeArguments =
         ModalRoute.of(context).settings.arguments as Map<String, String>;
     final categoryId = routeArguments['id'];
-
-    final categoryMeals = this
-        .widget
-        .meals
+    _categoryMeals = widget.meals
         .where((meal) => meal.categories.contains(categoryId))
         .toList();
   }
 
   void _removeMeal(String mealId) {
     setState(() {
-      categoryMeals.removeWhere((element) => element.id == mealId);
+      _categoryMeals.removeWhere((element) => element.id == mealId);
     });
   }
 
@@ -50,9 +50,9 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
       ),
       body: ListView.builder(
         itemBuilder: (context, index) {
-          var meal = categoryMeals[index];
+          var meal = _categoryMeals[index];
           return MealItem(
-            id: categoryMeals[index].id,
+            id: _categoryMeals[index].id,
             title: meal.title,
             imageUrl: meal.imageUrl,
             affordability: meal.affordability,
@@ -61,7 +61,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
             removeItem: _removeMeal,
           );
         },
-        itemCount: categoryMeals.length,
+        itemCount: _categoryMeals.length,
       ),
     );
   }
