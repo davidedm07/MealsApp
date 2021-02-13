@@ -1,27 +1,38 @@
-import 'package:MealsApp/screens/categories_screen.dart';
-import 'package:MealsApp/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 
+import '../models/meal.dart';
+import '../screens/categories_screen.dart';
+import '../widgets/main_drawer.dart';
 import 'favourite_screen.dart';
 
 class TabsScreen extends StatefulWidget {
+  final List<Meal> _favourites;
+
+  TabsScreen(this._favourites);
+
   @override
   _TabsScreenState createState() => _TabsScreenState();
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  final List<Map<String, Widget>> _pages = [
-    {
-      'page': CategoriesScreen(),
-      'title': Text('Categories'),
-    },
-    {
-      'page': FavouriteScreen(),
-      'title': Text('Favourites'),
-    },
-  ];
-
   int _selectedPageIndex = 0;
+
+  List<Map<String, Widget>> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      {
+        'page': CategoriesScreen(),
+        'title': Text('Categories'),
+      },
+      {
+        'page': FavouriteScreen(widget._favourites),
+        'title': Text('Favourites'),
+      },
+    ];
+  }
 
   void _selectPage(int index) {
     setState(() {
