@@ -5,29 +5,26 @@ class FiltersScreen extends StatefulWidget {
   static final route = '/filters';
 
   final Function _saveFilters;
+  final Map<String, bool> _filters;
 
-  FiltersScreen(this._saveFilters);
+  FiltersScreen(
+    this._saveFilters,
+    this._filters,
+  );
 
   @override
   _FiltersScreenState createState() => _FiltersScreenState();
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  Map<String, bool> _filters = {
-    'gluten-free': false,
-    'lactose-free': false,
-    'vegan': false,
-    'vegetarian': false,
-  };
-
   SwitchListTile _buildSwitchTile(title) {
     return SwitchListTile(
       title: Text('$title'),
-      value: _filters[title],
+      value: widget._filters[title],
       subtitle: Text('Only include $title meals.'),
       onChanged: (value) {
         setState(() {
-          _filters[title] = value;
+          widget._filters[title] = value;
         });
       },
     );
@@ -41,12 +38,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.save),
-            onPressed: () => widget._saveFilters({
-              'gluten': _filters['gluten-free'],
-              'vegetarian': _filters['vegetarian'],
-              'vegan': _filters['vegan'],
-              'lactose': _filters['lactose-free'],
-            }),
+            onPressed: () => widget._saveFilters(
+              widget._filters,
+              context,
+            ),
           ),
         ],
       ),

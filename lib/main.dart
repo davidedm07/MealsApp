@@ -16,33 +16,34 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   Map<String, bool> _filters = {
-    'gluten': false,
-    'lactose': false,
+    'gluten-free': false,
+    'lactose-free': false,
     'vegan': false,
     'vegetarian': false,
   };
 
   List<Meal> _meals = DUMMY_MEALS;
 
-  void _setFilters(Map<String, bool> filters) {
+  void _setFilters(Map<String, bool> filters, BuildContext context) {
     setState(() {
       _filters = filters;
       _meals =
           DUMMY_MEALS.where((element) => _checkProperties(element)).toList();
     });
+    Navigator.of(context).pushReplacementNamed('/');
   }
 
   bool _checkProperties(Meal meal) {
-    if (meal.isGlutenFree && !_filters['gluten']) {
+    if (!meal.isGlutenFree && _filters['gluten-free']) {
       return false;
     }
-    if (meal.isLactoseFree && !_filters['lactose']) {
+    if (!meal.isLactoseFree && _filters['lactose-free']) {
       return false;
     }
-    if (meal.isVegan && _filters['vegan']) {
+    if (!meal.isVegan && _filters['vegan']) {
       return false;
     }
-    if (meal.isVegetarian && _filters['vegetarian']) {
+    if (!meal.isVegetarian && _filters['vegetarian']) {
       return false;
     }
 
@@ -72,7 +73,7 @@ class _MyAppState extends State<MyApp> {
         '/': (context) => TabsScreen(),
         CategoryMealsScreen.route: (context) => CategoryMealsScreen(_meals),
         MealDetailScreen.route: (context) => MealDetailScreen(),
-        FiltersScreen.route: (context) => FiltersScreen(_setFilters),
+        FiltersScreen.route: (context) => FiltersScreen(_setFilters, _filters),
       },
     );
   }
