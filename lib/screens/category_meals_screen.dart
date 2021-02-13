@@ -15,10 +15,18 @@ class CategoryMealsScreen extends StatefulWidget {
 
 class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
   @override
-  Widget build(BuildContext context) {
-    final routeArguments =
-        ModalRoute.of(context).settings.arguments as Map<String, String>;
+  _CategoryMealsScreenState createState() => _CategoryMealsScreenState();
+}
 
+class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
+  Map<String, String> routeArguments;
+  bool isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeArguments =
+        ModalRoute.of(context).settings.arguments as Map<String, String>;
     final categoryId = routeArguments['id'];
 
     final categoryMeals = this
@@ -26,7 +34,16 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
         .meals
         .where((meal) => meal.categories.contains(categoryId))
         .toList();
+  }
 
+  void _removeMeal(String mealId) {
+    setState(() {
+      categoryMeals.removeWhere((element) => element.id == mealId);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(routeArguments['title']),
@@ -41,6 +58,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
             affordability: meal.affordability,
             duration: meal.duration,
             complexity: meal.complexity,
+            removeItem: _removeMeal,
           );
         },
         itemCount: categoryMeals.length,
